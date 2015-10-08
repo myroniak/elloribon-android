@@ -2,13 +2,19 @@ package com.google.elloribon;
 
 import android.app.ListFragment;
 import android.app.ProgressDialog;
+import android.graphics.Matrix;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.google.elloribon.model.Data;
 import com.google.elloribon.model.DataAdapter;
+import com.google.elloribon.model.ShortThousand;
+import com.google.elloribon.parallax.BaseListView;
+import com.google.elloribon.parallax.OnDetectScrollListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,6 +29,7 @@ public class MainListFragment extends ListFragment {
 
     ArrayList<Data> items_list;
     ProgressDialog progressDialog;
+    BaseListView baseListView;
 
     private static final String URL = "http://ellotv.bigdig.com.ua/api/home/video";
     private static final String TAG_DATA = "data";
@@ -37,7 +44,8 @@ public class MainListFragment extends ListFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         final String messageProgressDialog = getResources().getString(R.string.messageProgressDialog);
-
+        baseListView = (BaseListView) getListView();
+        baseListView.setItemsCanFocus(false);
         new MyAsyncTaskLoader(getActivity(), URL, progressDialog, messageProgressDialog) {
 
             @Override
@@ -56,16 +64,14 @@ public class MainListFragment extends ListFragment {
 
                         JSONObject jsonObjItems = jsonArrayItems.getJSONObject(j);
                         String titleClip = jsonObjItems.getString(TAG_TITLE);
-                        String countViews = jsonObjItems.getString(TAG_VIEW_COUNT);
                         String urlImage = jsonObjItems.getString(TAG_IMAGE);
-
+                        int countViews = jsonObjItems.getInt(TAG_VIEW_COUNT);
                         JSONArray jsonArrayArtist = jsonObjItems.getJSONArray(TAG_ARRAY_ARTISTS);
                         for (int k = 0; k < jsonArrayArtist.length(); k++) {
                             JSONObject jsonObjArtists = jsonArrayArtist.getJSONObject(k);
                             titleArtist = jsonObjArtists.getString(TAG_NAME);
-
                         }
-                        items_list.add(new Data(titleClip, titleArtist, countViews, urlImage));
+                        items_list.add(new Data(titleClip, titleArtist, ShortThousand.format(countViews), urlImage));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -79,10 +85,40 @@ public class MainListFragment extends ListFragment {
             }
         }.execute();
 
+
+        baseListView.setOnDetectScrollListener(new OnDetectScrollListener() {
+            Matrix imageMatrix;
+
+            @Override
+            public void onUpScrolling() {
+                int first = baseListView.getFirstVisiblePosition();
+                int last = baseListView.getLastVisiblePosition();
+                for (int i = 0; i < (last - first); i++) {
+                    ImageView imageView = ((DataAdapter.ViewHolder) baseListView.getChildAt(i).getTag()).imageView;
+                    imageMatrix = imageView.getImageMatrix();
+                    imageMatrix.postTranslate(0, -0.5f);
+                    imageView.setImageMatrix(imageMatrix);
+                    imageView.invalidate();
+                }
+            }
+
+            @Override
+            public void onDownScrolling() {
+                int first = baseListView.getFirstVisiblePosition();
+                int last = baseListView.getLastVisiblePosition();
+                for (int i = 0; i < (last - first); i++) {
+                    ImageView imageView = ((DataAdapter.ViewHolder) baseListView.getChildAt(i).getTag()).imageView;
+                    imageMatrix = imageView.getImageMatrix();
+                    imageMatrix.postTranslate(0, 0.5f);
+                    imageView.setImageMatrix(imageMatrix);
+                    imageView.invalidate();
+                }
+            }
+        });
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment, null);
     }
