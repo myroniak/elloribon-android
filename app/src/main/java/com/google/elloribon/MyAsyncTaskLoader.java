@@ -11,6 +11,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+/**
+ * Created by Roman on 07.10.2015.
+ */
 public abstract class MyAsyncTaskLoader extends AsyncTask<Void, Void, String> {
 
     HttpURLConnection urlConnection = null;

@@ -48,6 +48,11 @@ public class DataAdapter extends BaseAdapter {
     }
 
     @Override
+    public boolean isEnabled(int position) {
+        return false;
+    }
+
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
         Data data = getItem(position);
@@ -56,11 +61,17 @@ public class DataAdapter extends BaseAdapter {
             LayoutInflater mInflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = mInflater.inflate(R.layout.list_item_row, null);
+
+            TextView titleClip = (TextView) convertView.findViewById(R.id.titleClip);
+            TextView titleArtist = (TextView) convertView.findViewById(R.id.titleArtist);
+            TextView countViews = (TextView) convertView.findViewById(R.id.countViews);
+            ImageView imageView = (ImageView) convertView.findViewById(R.id.imageView);
+
             viewHolder = new ViewHolder();
-            viewHolder.titleClip = (TextView) convertView.findViewById(R.id.titleClip);
-            viewHolder.titleArtist = (TextView) convertView.findViewById(R.id.titleArtist);
-            viewHolder.countViews = (TextView) convertView.findViewById(R.id.countViews);
-            viewHolder.imageView = (ImageView) convertView.findViewById(R.id.imageView);
+            viewHolder.titleClip = titleClip;
+            viewHolder.titleArtist = titleArtist;
+            viewHolder.countViews = countViews;
+            viewHolder.imageView = imageView;
             convertView.setTag(viewHolder);
 
         }
