@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.elloribon.R;
+import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 
 import java.util.List;
 
@@ -26,9 +27,9 @@ public class DataAdapter extends BaseAdapter {
         this.context = context;
     }
 
-    static class ViewHolder {
+    public static class ViewHolder {
         TextView titleClip, titleArtist, countViews;
-        ImageView imageView;
+        public ImageView imageView;
     }
 
     @Override
@@ -61,15 +62,14 @@ public class DataAdapter extends BaseAdapter {
             viewHolder.countViews = (TextView) convertView.findViewById(R.id.countViews);
             viewHolder.imageView = (ImageView) convertView.findViewById(R.id.imageView);
             convertView.setTag(viewHolder);
-        } else {
-            viewHolder = (ViewHolder) convertView.getTag();
+
         }
+        viewHolder = (ViewHolder) convertView.getTag();
 
         viewHolder.titleClip.setText(data.getTitleClip());
         viewHolder.titleArtist.setText(data.getTitleArtist());
         viewHolder.countViews.setText(data.getCountViews());
-        viewHolder.imageView.setImageResource(data.getImage());
-
+        UrlImageViewHelper.setUrlDrawable(viewHolder.imageView, data.getImageUrl());
 
         return convertView;
     }

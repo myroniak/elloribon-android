@@ -8,14 +8,14 @@ public class Data {
     private final String titleClip;
     private final String titleArtist;
     private final String countViews;
-    private final int image;
+    private final String imageUrl;
 
-    public Data(String titleClip, String titleArtist, String countViews, int image) {
+    public Data(String titleClip, String titleArtist, String countViews, String imageUrl) {
         super();
         this.titleClip = titleClip;
         this.titleArtist = titleArtist;
         this.countViews = countViews;
-        this.image = image;
+        this.imageUrl = imageUrl;
 
     }
 
@@ -31,8 +31,8 @@ public class Data {
         return countViews;
     }
 
-    public int getImage() {
-        return image;
+    public String getImageUrl() {
+        return imageUrl;
     }
 }
 
