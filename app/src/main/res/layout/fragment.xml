@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/number_list">
-    </TextView>
-    <com.google.elloribon.model.BaseListView
+
+    <com.google.elloribon.parallax.BaseListView
         android:id="@id/android:list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </com.google.elloribon.model.BaseListView>
+        android:layout_height="match_parent"
+        android:cacheColorHint="@android:color/transparent"
+        android:background="@android:color/transparent"
+        android:fastScrollEnabled="true"
+        android:persistentDrawingCache="scrolling"
+        android:scrollingCache="false"/>
+
     <TextView
         android:id="@id/android:empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="@string/empty">
-    </TextView>
+        android:text="@string/emptyList"/>
 </LinearLayout>

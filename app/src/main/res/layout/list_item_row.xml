@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <ImageView
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/imageView"
         android:adjustViewBounds="true"
@@ -19,24 +19,56 @@
         android:background="#4b000000"
         android:layout_alignParentBottom="true">
 
+        <!--
+          _______________________________________
+         |                                       |
+         | android:fontFamily="sans-serif"       |
+         | android:textStyle="bold"              |
+         |_______________________________________|
+                            |
+                       roboto bold
+        -->
         <TextView
             android:id="@+id/titleClip"
             android:textSize="16sp"
+            android:fontFamily="sans-serif"
             android:textStyle="bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#ffffffff" />
 
+        <!--
+          _______________________________________
+         |                                       |
+         | android:fontFamily="sans-serif-light" |
+         | android:textStyle="normal"            |
+         |_______________________________________|
+                            |
+                    roboto light font
+        -->
         <TextView
             android:id="@+id/titleArtist"
             android:textSize="16sp"
+            android:fontFamily="sans-serif-light"
+            android:textStyle="normal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#ffffffff" />
 
+        <!--
+          _______________________________________
+         |                                       |
+         | android:fontFamily="sans-serif"       |
+         | android:textStyle="normal"            |
+         |_______________________________________|
+                            |
+                   roboto regular font
+        -->
         <TextView
             android:id="@+id/countViews"
             android:textSize="16sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#ffffffff" />
