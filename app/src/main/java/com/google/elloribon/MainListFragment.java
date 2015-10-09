@@ -53,13 +53,17 @@ public class MainListFragment extends ListFragment implements SwipeRefreshLayout
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
         swipeRefreshLayout.setOnRefreshListener(this);
 
+        //call method for use MyAsyncTaskLoader
         loadMyAsyncTaskLoader();
 
+        // set setOnDetectScrollListener in BaseListView
         baseListView.setOnDetectScrollListener(new OnDetectScrollListener() {
             Matrix imageMatrix;
 
+            //onUpScrolling event scroll in listView
             @Override
             public void onUpScrolling() {
+                // set parallax effect
                 int first = baseListView.getFirstVisiblePosition();
                 int last = baseListView.getLastVisiblePosition();
                 for (int i = 0; i < (last - first); i++) {
@@ -71,8 +75,10 @@ public class MainListFragment extends ListFragment implements SwipeRefreshLayout
                 }
             }
 
+            //onDownScrolling event scroll in listView
             @Override
             public void onDownScrolling() {
+                // set parallax effect
                 int first = baseListView.getFirstVisiblePosition();
                 int last = baseListView.getLastVisiblePosition();
                 for (int i = 0; i < (last - first); i++) {
@@ -87,8 +93,10 @@ public class MainListFragment extends ListFragment implements SwipeRefreshLayout
 
     }
 
+
     private void loadMyAsyncTaskLoader() {
         final String messageProgressDialog = getResources().getString(R.string.messageProgressDialog);
+        //use MyAsyncTaskLoader
         new MyAsyncTaskLoader(getActivity(), URL, progressDialog, messageProgressDialog) {
 
             @Override
@@ -97,9 +105,11 @@ public class MainListFragment extends ListFragment implements SwipeRefreshLayout
                 items_list = new ArrayList();
 
                 try {
-
+                    //get first object from json
                     JSONObject jsonobject = new JSONObject(strJson);
                     JSONObject jsonObjData = jsonobject.getJSONObject(TAG_DATA);
+
+                    //get array from object "data"
                     JSONArray jsonArrayItems = jsonObjData.getJSONArray(TAG_ARRAY_ITEMS);
 
                     String titleArtist = null;
@@ -109,8 +119,12 @@ public class MainListFragment extends ListFragment implements SwipeRefreshLayout
                         String titleClip = jsonObjItems.getString(TAG_TITLE);
                         String urlImage = jsonObjItems.getString(TAG_IMAGE);
                         int countViews = jsonObjItems.getInt(TAG_VIEW_COUNT);
+
+                        //get array from object "items"
                         JSONArray jsonArrayArtist = jsonObjItems.getJSONArray(TAG_ARRAY_ARTISTS);
                         for (int k = 0; k < jsonArrayArtist.length(); k++) {
+
+                            //get object from array "artists"
                             JSONObject jsonObjArtists = jsonArrayArtist.getJSONObject(k);
                             titleArtist = jsonObjArtists.getString(TAG_NAME);
                         }
@@ -120,16 +134,20 @@ public class MainListFragment extends ListFragment implements SwipeRefreshLayout
                     e.printStackTrace();
                 }
 
-                progressDialog.dismiss();
-
+                // set my data adapter
                 DataAdapter adapter = new DataAdapter(getActivity(), items_list);
                 setListAdapter(adapter);
-
+                progressDialog.dismiss();
             }
         }.execute();
+
+        // set value "swipeRefreshLayout" false for onfocusout
         swipeRefreshLayout.setRefreshing(false);
     }
 
+    /*
+    Method for  Swipe Down Refresh
+     */
     @Override
     public void onRefresh() {
         loadMyAsyncTaskLoader();
