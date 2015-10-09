@@ -5,20 +5,28 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.google.elloribon.parallax.BaseListView
-        android:id="@id/android:list"
+    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swipe_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:cacheColorHint="@android:color/transparent"
-        android:background="@android:color/transparent"
-        android:fastScrollEnabled="true"
-        android:persistentDrawingCache="scrolling"
-        android:scrollingCache="false"/>
+        android:orientation="vertical">
+
+        <com.google.elloribon.parallax.BaseListView
+            android:id="@id/android:list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:cacheColorHint="@android:color/transparent"
+            android:background="@android:color/transparent"
+            android:fastScrollEnabled="true"
+            android:persistentDrawingCache="scrolling"
+            android:scrollingCache="false" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+    >
 
     <TextView
         android:id="@id/android:empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="@string/emptyList"/>
+        android:text="@string/emptyList" />
 </LinearLayout>

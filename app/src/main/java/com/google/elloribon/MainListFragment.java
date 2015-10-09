@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,11 +26,13 @@ import java.util.ArrayList;
 /**
  * Created by Roman on 06.10.2015.
  */
-public class MainListFragment extends ListFragment {
+public class MainListFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener {
 
     ArrayList<Data> items_list;
     ProgressDialog progressDialog;
     BaseListView baseListView;
+
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private static final String URL = "http://ellotv.bigdig.com.ua/api/home/video";
     private static final String TAG_DATA = "data";
@@ -41,11 +44,51 @@ public class MainListFragment extends ListFragment {
     private static final String TAG_NAME = "name";
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        final String messageProgressDialog = getResources().getString(R.string.messageProgressDialog);
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
         baseListView = (BaseListView) getListView();
         baseListView.setItemsCanFocus(false);
+
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
+        swipeRefreshLayout.setOnRefreshListener(this);
+
+        loadMyAsyncTaskLoader();
+
+        baseListView.setOnDetectScrollListener(new OnDetectScrollListener() {
+            Matrix imageMatrix;
+
+            @Override
+            public void onUpScrolling() {
+                int first = baseListView.getFirstVisiblePosition();
+                int last = baseListView.getLastVisiblePosition();
+                for (int i = 0; i < (last - first); i++) {
+                    ImageView imageView = ((DataAdapter.ViewHolder) baseListView.getChildAt(i).getTag()).imageView;
+                    imageMatrix = imageView.getImageMatrix();
+                    imageMatrix.postTranslate(0, -0.5f);
+                    imageView.setImageMatrix(imageMatrix);
+                    imageView.invalidate();
+                }
+            }
+
+            @Override
+            public void onDownScrolling() {
+                int first = baseListView.getFirstVisiblePosition();
+                int last = baseListView.getLastVisiblePosition();
+                for (int i = 0; i < (last - first); i++) {
+                    ImageView imageView = ((DataAdapter.ViewHolder) baseListView.getChildAt(i).getTag()).imageView;
+                    imageMatrix = imageView.getImageMatrix();
+                    imageMatrix.postTranslate(0, 0.5f);
+                    imageView.setImageMatrix(imageMatrix);
+                    imageView.invalidate();
+                }
+            }
+        });
+
+    }
+
+    private void loadMyAsyncTaskLoader() {
+        final String messageProgressDialog = getResources().getString(R.string.messageProgressDialog);
         new MyAsyncTaskLoader(getActivity(), URL, progressDialog, messageProgressDialog) {
 
             @Override
@@ -84,37 +127,12 @@ public class MainListFragment extends ListFragment {
 
             }
         }.execute();
+        swipeRefreshLayout.setRefreshing(false);
+    }
 
-
-        baseListView.setOnDetectScrollListener(new OnDetectScrollListener() {
-            Matrix imageMatrix;
-
-            @Override
-            public void onUpScrolling() {
-                int first = baseListView.getFirstVisiblePosition();
-                int last = baseListView.getLastVisiblePosition();
-                for (int i = 0; i < (last - first); i++) {
-                    ImageView imageView = ((DataAdapter.ViewHolder) baseListView.getChildAt(i).getTag()).imageView;
-                    imageMatrix = imageView.getImageMatrix();
-                    imageMatrix.postTranslate(0, -0.5f);
-                    imageView.setImageMatrix(imageMatrix);
-                    imageView.invalidate();
-                }
-            }
-
-            @Override
-            public void onDownScrolling() {
-                int first = baseListView.getFirstVisiblePosition();
-                int last = baseListView.getLastVisiblePosition();
-                for (int i = 0; i < (last - first); i++) {
-                    ImageView imageView = ((DataAdapter.ViewHolder) baseListView.getChildAt(i).getTag()).imageView;
-                    imageMatrix = imageView.getImageMatrix();
-                    imageMatrix.postTranslate(0, 0.5f);
-                    imageView.setImageMatrix(imageMatrix);
-                    imageView.invalidate();
-                }
-            }
-        });
+    @Override
+    public void onRefresh() {
+        loadMyAsyncTaskLoader();
     }
 
     @Override
